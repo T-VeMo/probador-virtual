@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b7dff"/>
+      <stop offset="1" stop-color="#4a36d6"/>
+    </linearGradient>
+  </defs>
+  <!-- Fondo estilo macOS (cuadrado redondeado con margen) -->
+  <rect x="100" y="100" width="824" height="824" rx="184" fill="url(#bg)"/>
+  <!-- Gancho de ropa -->
+  <g fill="none" stroke="#ffffff" stroke-width="44" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M512 382 c0 -34 -26 -58 -56 -58 c-30 0 -54 22 -56 50"/>
+    <path d="M512 382 v26 L232 610 c-22 16 -12 50 16 50 h528 c28 0 38 -34 16 -50 L512 408"/>
+  </g>
+  <!-- Destello (IA) -->
+  <path d="M720 250 l18 52 l52 18 l-52 18 l-18 52 l-18 -52 l-52 -18 l52 -18 z" fill="#ffffff"/>
+  <path d="M800 380 l9 25 l25 9 l-25 9 l-9 25 l-9 -25 l-25 -9 l25 -9 z" fill="#ffffff" opacity=".85"/>
+</svg>

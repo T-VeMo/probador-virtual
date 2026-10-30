@@ -1,0 +1,89 @@
+{
+  "name": "probador-virtual",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Probador virtual de escritorio: arrastra ropa desde cualquier tienda y pruébatela en vivo con tu cámara (IA de Decart).",
+  "author": "Probador Virtual contributors",
+  "license": "MIT",
+  "main": "main.js",
+  "type": "commonjs",
+  "scripts": {
+    "prebuild": "node scripts/patch-sdk.js",
+    "build": "esbuild src/renderer.js --bundle --format=esm --platform=browser --target=chrome130 --outfile=dist/renderer.js --log-level=warning",
+    "start": "npm run build && electron .",
+    "web": "npm run build && node server.js",
+    "dist": "npm run build && electron-builder --publish never",
+    "dist:mac": "npm run build && electron-builder --mac --publish never",
+    "dist:win": "npm run build && electron-builder --win --publish never"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "electron": "^45.1.0",
+    "electron-builder": "^26.18.0",
+    "esbuild": "^0.28.2",
+    "@decartai/sdk": "0.2.14"
+  },
+  "build": {
+    "appId": "io.github.probadorvirtual.app",
+    "productName": "Probador Virtual",
+    "copyright": "MIT License",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "styles.css",
+      "web-shim.js",
+      "dist/renderer.js",
+      "package.json"
+    ],
+    "asar": true,
+    "mac": {
+      "category": "public.app-category.lifestyle",
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "identity": "-",
+      "hardenedRuntime": false,
+      "extendInfo": {
+        "NSCameraUsageDescription": "Probador Virtual usa la cámara para mostrarte con la ropa puesta."
+      }
+    },
+    "dmg": {
+      "artifactName": "Probador-Virtual-${version}-mac-${arch}.${ext}",
+      "title": "Probador Virtual"
+    },
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Probador Virtual",
+      "artifactName": "Probador-Virtual-Setup-${version}.${ext}"
+    },
+    "publish": null
+  }
+}

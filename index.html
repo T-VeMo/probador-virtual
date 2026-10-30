@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; media-src 'self' blob: mediastream:; connect-src 'self' https: wss: data: blob:;" />
+  <title>Probador Virtual</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="titlebar">
+    <div class="traffic">
+      <button id="btn-close" class="dot red" title="Cerrar"></button>
+      <button id="btn-min" class="dot yellow" title="Minimizar"></button>
+    </div>
+    <span class="title">Probador Virtual</span>
+    <div class="actions">
+      <button id="btn-big" class="icon" title="Cámara grande (oculta los controles)">⤢</button>
+      <button id="btn-pin" class="icon on" title="Siempre visible">📌</button>
+      <button id="btn-settings" class="icon" title="Ajustes">⚙︎</button>
+    </div>
+  </header>
+
+  <main id="stage">
+    <video id="local" autoplay playsinline muted></video>
+    <video id="remote" autoplay playsinline muted></video>
+
+    <div id="placeholder" class="overlay center">
+      <div class="big">👕</div>
+      <p>Arrastra aquí una prenda desde cualquier tienda y presiona <b>Probar</b>.</p>
+      <p class="hint">También puedes pegarla con ⌘V o elegir un archivo.</p>
+    </div>
+
+    <div id="drop-hint" class="overlay center hidden">
+      <div class="big">⬇︎</div>
+      <p>Suelta para probártelo</p>
+    </div>
+
+    <div id="busy" class="overlay center hidden">
+      <div class="spinner"></div>
+      <p id="busy-text">Conectando…</p>
+    </div>
+
+    <div id="status" class="pill hidden"><span class="led"></span><span id="status-text">Activo</span><span id="timer">0:00</span></div>
+    <img id="garment-thumb" class="hidden" alt="Prenda actual" />
+    <!-- Solo visible en modo "cámara grande" -->
+    <div id="float-ctrl"><button id="btn-float" class="primary">Probar</button></div>
+  </main>
+
+  <section class="controls">
+    <div class="row">
+      <select id="garment-type" title="Tipo de prenda">
+        <option value="auto">Prenda: automática</option>
+        <option value="top">Parte de arriba</option>
+        <option value="bottom">Parte de abajo</option>
+        <option value="dress">Vestido / enterito</option>
+        <option value="outerwear">Chaqueta / abrigo</option>
+        <option value="outfit">Outfit completo</option>
+      </select>
+      <button id="btn-file" class="ghost" title="Elegir imagen">Archivo…</button>
+      <input id="file-input" type="file" accept="image/*" hidden />
+    </div>
+    <input id="garment-desc" type="text" placeholder="Descripción opcional (ej: chaqueta de cuero negra)" />
+    <div id="history" class="history"></div>
+    <div class="row">
+      <button id="btn-start" class="primary">Probar</button>
+      <button id="btn-stop" class="danger hidden">Detener</button>
+    </div>
+    <p id="error" class="error hidden"></p>
+  </section>
+
+  <dialog id="settings">
+    <form method="dialog">
+      <h3>Ajustes</h3>
+      <label>Clave de API de Decart
+        <input id="api-key" type="password" placeholder="Pega tu clave (dct_… / sk_…)" autocomplete="off" />
+      </label>
+      <p class="hint" id="key-state"></p>
+      <p class="hint">Consíguela en <a href="#" id="link-platform">platform.decart.ai</a>. Se guarda cifrada en tu llavero y nunca se envía a la ventana: la app usa tokens temporales.</p>
+      <label>Detener automáticamente tras
+        <select id="auto-stop">
+          <option value="60">1 minuto</option>
+          <option value="120">2 minutos</option>
+          <option value="300">5 minutos</option>
+          <option value="0">Nunca</option>
+        </select>
+      </label>
+      <label class="check"><input id="mirror" type="checkbox" checked /> Efecto espejo</label>
+      <p class="hint">El modelo cuesta 2 créditos por segundo mientras está activo.</p>
+      <div class="row end">
+        <button value="cancel" class="ghost">Cancelar</button>
+        <button id="btn-save" value="save" class="primary">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="pip-note" class="overlay center hidden">
+    <div class="big">📌</div>
+    <p>El probador está en la ventana flotante.</p>
+    <p class="hint">Cierra la ventana flotante para volver aquí. No cierres esta pestaña.</p>
+  </div>
+
+  <!-- En Chrome (modo web) este archivo conecta la interfaz con el servidor local. En Electron no hace nada. -->
+  <script src="web-shim.js"></script>
+  <script type="module" src="dist/renderer.js"></script>
+</body>
+</html>

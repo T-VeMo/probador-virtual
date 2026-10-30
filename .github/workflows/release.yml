@@ -1,0 +1,58 @@
+# Compila el instalador de Mac (.dmg) y de Windows (.exe) y los sube a GitHub Releases.
+#
+# Se ejecuta solo cuando publicas una etiqueta de versión, por ejemplo v1.0.0
+# (desde la web de GitHub: Releases → Draft a new release → Choose a tag → v1.0.0 → Publish).
+# También puedes lanzarlo a mano desde la pestaña Actions para probar (los archivos quedan como "artifacts").
+name: Publicar versión
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar instalador de Mac (.dmg)
+        if: runner.os == 'macOS'
+        run: npm run dist:mac
+
+      - name: Compilar instalador de Windows (.exe)
+        if: runner.os == 'Windows'
+        run: npm run dist:win
+
+      - name: Guardar instaladores como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-${{ runner.os }}
+          path: |
+            release/*.dmg
+            release/*.exe
+          if-no-files-found: error
+
+      - name: Subir a la Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.dmg
+            release/*.exe
